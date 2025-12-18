@@ -1,0 +1,438 @@
+# API Documentation - Postman Guide
+
+Dokumentasi lengkap untuk testing REST API menggunakan Postman.
+
+> **Base URL**: `http://localhost:8081`
+
+---
+
+## 📋 Daftar Endpoint
+
+| Method | Endpoint | Deskripsi                         |
+| ------ | -------- | --------------------------------- |
+| GET    | `/roles` | Mengambil semua role              |
+| POST   | `/roles` | Membuat role baru                 |
+| GET    | `/users` | Mengambil semua user beserta role |
+| POST   | `/users` | Membuat user baru                 |
+
+---
+
+## 🔐 Role Endpoints
+
+### 1. Get All Roles
+
+Mengambil daftar semua role yang tersedia.
+
+**Request:**
+
+```
+GET http://localhost:8081/roles
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "name": "ADMIN"
+  },
+  {
+    "id": 2,
+    "name": "USER"
+  }
+]
+```
+
+---
+
+### 2. Create New Role
+
+Membuat role baru.
+
+**Request:**
+
+```
+POST http://localhost:8081/roles
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "name": "MANAGER"
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": 3,
+  "name": "MANAGER"
+}
+```
+
+**Possible Errors:**
+| Status | Deskripsi |
+|--------|-----------|
+| 500 | Role dengan nama tersebut sudah ada (duplicate) |
+
+---
+
+## 👤 User Endpoints
+
+### 3. Get All Users
+
+Mengambil daftar semua user beserta role yang dimiliki.
+
+**Request:**
+
+```
+GET http://localhost:8081/users
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "isActive": true,
+    "roles": [
+      {
+        "id": 1,
+        "name": "ADMIN"
+      },
+      {
+        "id": 2,
+        "name": "USER"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "secret123",
+    "isActive": true,
+    "roles": [
+      {
+        "id": 2,
+        "name": "USER"
+      },
+      {
+        "id": 3,
+        "name": "MANAGER"
+      }
+    ]
+  }
+]
+```
+
+---
+
+### 4. Create New User (Tanpa Role)
+
+Membuat user baru tanpa assign role.
+
+**Request:**
+
+```
+POST http://localhost:8081/users
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "secret123",
+  "isActive": true
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": 2,
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "secret123",
+  "isActive": true,
+  "roles": []
+}
+```
+
+---
+
+### 5. Create New User (Dengan Role)
+
+Membuat user baru dan langsung assign role yang sudah ada.
+
+**Request:**
+
+```
+POST http://localhost:8081/users
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "username": "janedoe",
+  "email": "jane@example.com",
+  "password": "password456",
+  "isActive": true,
+  "roles": [{ "id": 1 }, { "id": 2 }]
+}
+```
+
+> ⚠️ **Penting**: Untuk assign role, cukup kirim `id` role yang sudah ada di database.
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": 3,
+  "username": "janedoe",
+  "email": "jane@example.com",
+  "password": "password456",
+  "isActive": true,
+  "roles": [
+    {
+      "id": 1,
+      "name": "ADMIN"
+    },
+    {
+      "id": 2,
+      "name": "USER"
+    }
+  ]
+}
+```
+
+**Possible Errors:**
+| Status | Deskripsi |
+|--------|-----------|
+| 500 | Username sudah ada (duplicate) |
+
+---
+
+## 🧪 Postman Collection Setup
+
+### Import Collection
+
+1. Buka Postman
+2. Klik **Import** → **Raw text**
+3. Paste JSON collection di bawah ini
+
+### Postman Collection JSON
+
+```json
+{
+  "info": {
+    "name": "Spring Tutor API",
+    "description": "REST API untuk User & Role Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    }
+  ],
+  "item": [
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/roles",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/roles",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"MANAGER\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Create User (No Role)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/users",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"johndoe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"secret123\",\n    \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Create User (With Roles)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/users",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"janedoe\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"password456\",\n    \"isActive\": true,\n    \"roles\": [\n        {\"id\": 1},\n        {\"id\": 2}\n    ]\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 📝 Field Descriptions
+
+### User Fields
+
+| Field    | Tipe    | Required | Deskripsi                            |
+| -------- | ------- | -------- | ------------------------------------ |
+| username | String  | ✅ Ya    | Username unik, maksimal 100 karakter |
+| email    | String  | Tidak    | Alamat email, maksimal 150 karakter  |
+| password | String  | Tidak    | Password (plain text untuk demo)     |
+| isActive | Boolean | Tidak    | Status aktif user                    |
+| roles    | Array   | Tidak    | Array of role objects dengan id      |
+
+### Role Fields
+
+| Field | Tipe   | Required | Deskripsi                            |
+| ----- | ------ | -------- | ------------------------------------ |
+| name  | String | ✅ Ya    | Nama role unik, maksimal 50 karakter |
+
+---
+
+## 🚀 Quick Test dengan cURL
+
+### Get All Roles
+
+```bash
+curl -X GET http://localhost:8081/roles
+```
+
+### Create Role
+
+```bash
+curl -X POST http://localhost:8081/roles \
+  -H "Content-Type: application/json" \
+  -d '{"name": "SUPERVISOR"}'
+```
+
+### Get All Users
+
+```bash
+curl -X GET http://localhost:8081/users
+```
+
+### Create User with Roles
+
+```bash
+curl -X POST http://localhost:8081/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "newuser",
+    "email": "new@example.com",
+    "password": "pass123",
+    "isActive": true,
+    "roles": [{"id": 1}]
+  }'
+```
+
+---
+
+## ⚙️ Environment Variables (Postman)
+
+Buat environment baru dengan variabel:
+
+| Variable | Initial Value         | Current Value         |
+| -------- | --------------------- | --------------------- |
+| baseUrl  | http://localhost:8081 | http://localhost:8081 |
+
+Dengan environment variables, Anda bisa dengan mudah switch antara development dan production URL.

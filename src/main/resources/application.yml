@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: spring-tutor
+
+  # ============================================
+  # DATABASE CONFIGURATION - SQL Server 2022
+  # ============================================
+  datasource:
+    # URL koneksi ke SQL Server
+    # - localhost:1433 = host dan port default SQL Server
+    # - databaseName = nama database yang akan digunakan
+    # - encrypt=true = mengaktifkan enkripsi koneksi
+    # - trustServerCertificate=true = mempercayai sertifikat server (untuk development)
+    url: jdbc:sqlserver://localhost:1433;databaseName=spring_tutor;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: StrongPass123!
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  # ============================================
+  # JPA / HIBERNATE CONFIGURATION
+  # ============================================
+  jpa:
+    hibernate:
+      # ddl-auto options:
+      # - none: tidak ada aksi DDL
+      # - validate: validasi schema tapi tidak ubah
+      # - update: update schema sesuai entity (recommended untuk development)
+      # - create: buat ulang schema setiap start
+      # - create-drop: buat schema saat start, hapus saat shutdown
+      ddl-auto: update
+
+    # Menampilkan SQL query yang dijalankan Hibernate di console
+    show-sql: true
+
+    properties:
+      hibernate:
+        # Dialect memberitahu Hibernate cara generate SQL untuk database tertentu
+        dialect: org.hibernate.dialect.SQLServerDialect
+        # Format SQL agar lebih mudah dibaca
+        format_sql: true
