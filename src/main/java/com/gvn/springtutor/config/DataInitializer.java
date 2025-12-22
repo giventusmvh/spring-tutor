@@ -7,6 +7,7 @@ import com.gvn.springtutor.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -18,17 +19,8 @@ import com.gvn.springtutor.repository.ProductRepository;
 /**
  * Data Initializer - Menginisialisasi data awal saat aplikasi start.
  * 
- * PENJELASAN:
- * 
- * @Component - Menandai class ini sebagai Spring Bean yang akan di-manage oleh
- *            Spring Container.
- * 
- *            CommandLineRunner - Interface dari Spring Boot yang method
- *            run()-nya akan
- *            dieksekusi setelah ApplicationContext ter-load.
- *            Cocok untuk inisialisasi data, migrasi, atau setup awal.
- * 
- * @Slf4j - Lombok annotation untuk logging menggunakan SLF4J.
+ * Password sekarang di-encode menggunakan BCryptPasswordEncoder
+ * untuk kompatibilitas dengan Spring Security.
  */
 @Component
 @RequiredArgsConstructor
@@ -38,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -48,6 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         Role userRole = createRoleIfNotExists("USER");
 
         // Create sample user dengan 2 role jika belum ada
+        // Password akan di-encode dengan BCrypt
         createUserIfNotExists("admin", "admin@example.com", "admin123", adminRole, userRole);
 
         createProductIfNotExists("Bronze", 12, 5.0);
@@ -73,6 +67,7 @@ public class DataInitializer implements CommandLineRunner {
 
     /**
      * Membuat user jika belum ada di database.
+     * Password akan di-encode menggunakan BCrypt.
      */
     private void createUserIfNotExists(String username, String email, String password, Role... roles) {
         if (userRepository.findByUsername(username).isEmpty()) {
@@ -86,7 +81,7 @@ public class DataInitializer implements CommandLineRunner {
             User user = User.builder()
                     .username(username)
                     .email(email)
-                    .password(password)
+                    .password(passwordEncoder.encode(password)) // Encode password dengan BCrypt
                     .isActive(true)
                     .roles(roleSet)
                     .build();

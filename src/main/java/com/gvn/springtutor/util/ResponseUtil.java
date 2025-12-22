@@ -29,8 +29,8 @@ public class ResponseUtil {
     return ResponseEntity.status(HttpStatus.CREATED).body(body);
   }
 
-  public static ResponseEntity<ApiResponse<Object>> error(HttpStatus status, String message) {
-    ApiResponse<Object> body = ApiResponse.builder()
+  public static <T> ResponseEntity<ApiResponse<T>> error(HttpStatus status, String message) {
+    ApiResponse<T> body = ApiResponse.<T>builder()
         .success(false)
         .message(message)
         .data(null)

@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Login Request DTO
+ * Register Request DTO
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequest {
+public class RegisterRequest {
     private String username;
+    private String email;
     private String password;
 }

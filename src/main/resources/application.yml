@@ -38,3 +38,13 @@ spring:
         dialect: org.hibernate.dialect.SQLServerDialect
         # Format SQL agar lebih mudah dibaca
         format_sql: true
+
+# ============================================
+# JWT CONFIGURATION
+# ============================================
+jwt:
+  # Secret key untuk signing JWT (gunakan key yang lebih panjang di production)
+  # Minimal 256-bit untuk HS256 algorithm
+  secret: mySecretKeyForJWTTokenGenerationWhichShouldBeLongEnoughForHS256Algorithm2024
+  # Token expiration dalam milliseconds (24 jam = 86400000 ms)
+  expiration: 86400000
