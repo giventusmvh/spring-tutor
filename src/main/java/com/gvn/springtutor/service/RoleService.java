@@ -3,63 +3,48 @@ package com.gvn.springtutor.service;
 import com.gvn.springtutor.entity.Role;
 import com.gvn.springtutor.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Service Layer untuk Role.
- * 
- * PENJELASAN:
- * 
- * @Service - Menandai class ini sebagai Spring Service Bean.
- *          Service layer berisi business logic aplikasi.
- * 
- * @RequiredArgsConstructor - Lombok annotation yang generate constructor
- *                          untuk semua field yang final.
- *                          Ini adalah cara dependency injection yang
- *                          recommended.
- * 
- *                          TANGGUNG JAWAB SERVICE LAYER:
- *                          ============================
- *                          - Menampung business logic
- *                          - Mengkoordinasikan repository calls
- *                          - Transaction management (jika diperlukan)
- *                          - Validasi business rules
+ * Role Service dengan Redis Caching.
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoleService {
 
     private final RoleRepository roleRepository;
 
     /**
-     * Membuat role baru.
-     * 
-     * @param role entity Role yang akan disimpan
-     * @return Role yang sudah tersimpan (dengan ID yang di-generate)
+     * Create role dan hapus cache.
      */
+    @CacheEvict(value = "roles", allEntries = true)
     public Role createRole(Role role) {
+        log.info("Creating role: {}", role.getName());
         return roleRepository.save(role);
     }
 
     /**
-     * Mengambil semua role.
-     * 
-     * @return List semua Role
+     * Get all roles dengan caching.
      */
+    @Cacheable(value = "roles", key = "'allRoles'")
     public List<Role> getAllRoles() {
+        log.info("Fetching all roles from DATABASE");
         return roleRepository.findAll();
     }
 
     /**
-     * Mencari role berdasarkan nama.
-     * 
-     * @param name nama role
-     * @return Optional<Role>
+     * Find role by name dengan caching.
      */
+    @Cacheable(value = "roles", key = "#name")
     public Optional<Role> findByName(String name) {
+        log.info("Fetching role '{}' from DATABASE", name);
         return roleRepository.findByName(name);
     }
 }

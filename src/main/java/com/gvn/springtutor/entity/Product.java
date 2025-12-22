@@ -6,13 +6,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+
+/**
+ * Product entity - implements Serializable for Redis caching.
+ */
 @Entity
 @Table(name = "products")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,5 +35,4 @@ public class Product {
 
     @Column(name = "interest_rate", nullable = false)
     private Double interestRate;
-
 }

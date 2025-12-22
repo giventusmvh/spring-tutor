@@ -48,3 +48,27 @@ jwt:
   secret: mySecretKeyForJWTTokenGenerationWhichShouldBeLongEnoughForHS256Algorithm2024
   # Token expiration dalam milliseconds (24 jam = 86400000 ms)
   expiration: 86400000
+
+# ============================================
+# REDIS CONFIGURATION
+# ============================================
+spring.data:
+  redis:
+    host: localhost
+    port: 6379
+    # password: yourpassword  # Uncomment jika Redis membutuhkan password
+    timeout: 60000 # Connection timeout in ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+# ============================================
+# CACHE CONFIGURATION
+# ============================================
+spring.cache:
+  type: redis
+  redis:
+    time-to-live: 3600000 # 1 hour in ms
+    cache-null-values: false
