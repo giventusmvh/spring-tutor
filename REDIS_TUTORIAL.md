@@ -121,7 +121,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -141,9 +141,11 @@ public class RedisConfig {
 
         // Key menggunakan String
         template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
 
-        // Value menggunakan JSON
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        // Value menggunakan JDK Serialization (entities implement Serializable)
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
+        template.setHashValueSerializer(new JdkSerializationRedisSerializer());
 
         return template;
     }
@@ -154,10 +156,12 @@ public class RedisConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1))           // TTL 1 jam
-                .disableCachingNullValues()               // Jangan cache null
-                .serializeKeysWith(...)                   // Key serializer
-                .serializeValuesWith(...);                // Value serializer (JSON)
+                .entryTtl(Duration.ofHours(1))                    // TTL 1 jam
+                .disableCachingNullValues()                        // Jangan cache null
+                .serializeKeysWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new JdkSerializationRedisSerializer()));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)
@@ -165,6 +169,8 @@ public class RedisConfig {
     }
 }
 ```
+
+> **Note**: Menggunakan `JdkSerializationRedisSerializer` karena `GenericJackson2JsonRedisSerializer` deprecated di Spring Data Redis 4.0. Semua entity harus implements `Serializable`.
 
 ### Penjelasan:
 

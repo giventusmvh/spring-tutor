@@ -1,67 +1,87 @@
 package com.gvn.springtutor.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+//import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
-
-/**
- * Redis Configuration
- * 
- * Konfigurasi untuk Redis sebagai cache.
- * 
- * @EnableCaching - Mengaktifkan caching di Spring Boot
- */
 @Configuration
 @EnableCaching
-public class RedisConfig {
+@SuppressWarnings({ "deprecation", "removal" })
+public class RedisConfig extends CachingConfigurerSupport {
 
-    /**
-     * Redis Template untuk operasi Redis manual.
-     * Jika ingin set/get data langsung ke Redis tanpa annotation.
-     */
+    // @Bean
+    // public RedisTemplate<String, Object> redisTemplate(
+    // RedisConnectionFactory connectionFactory,
+    // ObjectMapper redisObjectMapper) {
+    // RedisTemplate<String, Object> template = new RedisTemplate<>();
+    // template.setConnectionFactory(connectionFactory);
+
+    // // Gunakan GenericJackson2JsonRedisSerializer yang mendukung Jackson 2
+    // // Suppress warning deprecation karena di version baru class ini deprecated
+    // // namun kita butuh support default typing yang ada di class ini.
+    // GenericJackson2JsonRedisSerializer serializer = new
+    // GenericJackson2JsonRedisSerializer(redisObjectMapper);
+
+    // template.setKeySerializer(new StringRedisSerializer());
+    // template.setValueSerializer(serializer);
+    // template.setHashKeySerializer(new StringRedisSerializer());
+    // template.setHashValueSerializer(serializer);
+
+    // template.afterPropertiesSet();
+    // return template;
+    // }
+
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
+    public ObjectMapper redisObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
 
-        // Serializer untuk key (String)
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // Serializer untuk value (JSON)
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        return template;
+        return mapper;
     }
 
-    /**
-     * Cache Manager dengan konfigurasi default.
-     */
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                // TTL default 1 jam
-                .entryTtl(Duration.ofHours(1))
-                // Tidak cache nilai null
-                .disableCachingNullValues()
-                // Serializer untuk key
-                .serializeKeysWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(new StringRedisSerializer()))
-                // Serializer untuk value (JSON)
-                .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    // @Bean
+    // public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory
+    // redisConnectionFactory) {
+    // RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    // redisTemplate.setConnectionFactory(redisConnectionFactory);
+    // redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+    // return redisTemplate;
+    // }
 
-        return RedisCacheManager.builder(connectionFactory)
+    @Bean
+    public RedisCacheManager cacheManager(
+            RedisConnectionFactory factory,
+            ObjectMapper redisObjectMapper) {
+
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        serializer.setObjectMapper(redisObjectMapper);
+
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair
+                                .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(
+                        RedisSerializationContext.SerializationPair
+                                .fromSerializer(serializer))
+                .disableCachingNullValues();
+
+        return RedisCacheManager.builder(factory)
                 .cacheDefaults(config)
                 .build();
     }
