@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.gvn.springtutor.dto.CreateProductRequest;
+import com.gvn.springtutor.dto.UpdateProductRequest;
 import com.gvn.springtutor.entity.Product;
 import com.gvn.springtutor.exception.ResourceNotFoundException;
 import com.gvn.springtutor.repository.ProductRepository;
@@ -34,8 +36,13 @@ public class ProductService {
      *             allEntries=true berarti hapus semua entry di cache ini
      */
     @CacheEvict(value = "products", allEntries = true)
-    public Product createProduct(Product product) {
-        log.info("Creating product: {}", product.getName());
+    public Product createProduct(CreateProductRequest request) {
+        log.info("Creating product: {}", request.getName());
+        Product product = Product.builder()
+                .name(request.getName())
+                .tenor(request.getTenor())
+                .interestRate(request.getInterestRate())
+                .build();
         return productRepository.save(product);
     }
 
@@ -69,14 +76,21 @@ public class ProductService {
      * @CacheEvict - Menghapus semua cache products karena data berubah
      */
     @CacheEvict(value = "products", allEntries = true)
-    public Product updateProduct(Long id, Product productDetails) {
+    public Product updateProduct(Long id, UpdateProductRequest request) {
         log.info("Updating product with ID: {}", id);
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
 
-        existingProduct.setName(productDetails.getName());
-        existingProduct.setTenor(productDetails.getTenor());
-        existingProduct.setInterestRate(productDetails.getInterestRate());
+        // Partial update - hanya update field yang tidak null
+        if (request.getName() != null) {
+            existingProduct.setName(request.getName());
+        }
+        if (request.getTenor() != null) {
+            existingProduct.setTenor(request.getTenor());
+        }
+        if (request.getInterestRate() != null) {
+            existingProduct.setInterestRate(request.getInterestRate());
+        }
 
         return productRepository.save(existingProduct);
     }
