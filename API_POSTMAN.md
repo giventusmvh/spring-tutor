@@ -841,3 +841,63 @@ Buat environment baru dengan variabel:
 | baseUrl  | http://localhost:8081 | http://localhost:8081 |
 
 Dengan environment variables, Anda bisa dengan mudah switch antara development dan production URL.
+
+---
+
+## ❌ Error Responses
+
+Semua error response menggunakan format `ApiResponse` yang konsisten.
+
+### 404 - Resource Not Found
+
+Ketika resource tidak ditemukan di database.
+
+```bash
+curl http://localhost:8081/users/9999
+```
+
+**Response:** `404 Not Found`
+
+```json
+{
+  "success": false,
+  "message": "User not found with id: '9999'",
+  "data": null,
+  "code": 404,
+  "timestamp": "2025-12-23T04:37:40Z"
+}
+```
+
+### 400 - Bad Request
+
+Ketika request tidak valid.
+
+**Response:** `400 Bad Request`
+
+```json
+{
+  "success": false,
+  "message": "Invalid request parameters",
+  "data": null,
+  "code": 400,
+  "timestamp": "2025-12-23T04:37:40Z"
+}
+```
+
+### 500 - Internal Server Error
+
+Ketika terjadi error pada server.
+
+**Response:** `500 Internal Server Error`
+
+```json
+{
+  "success": false,
+  "message": "An unexpected error occurred: ...",
+  "data": null,
+  "code": 500,
+  "timestamp": "2025-12-23T04:37:40Z"
+}
+```
+
+> 📖 Untuk dokumentasi lengkap tentang error handling, lihat [ERROR_HANDLING.md](./ERROR_HANDLING.md)

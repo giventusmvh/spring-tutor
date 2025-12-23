@@ -278,28 +278,42 @@ ApiResponse<User> response = ApiResponse.error("User not found", 404);
 
 ---
 
-## Integrasi dengan Exception Handler (Opsional)
+## Integrasi dengan Exception Handler
 
-Untuk menangani exception secara global:
+Project ini sudah memiliki **GlobalExceptionHandler** yang menangani exception secara global:
 
 ```java
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFound(EntityNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(ex.getMessage(), 404));
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        log.error("Resource not found: {}", ex.getMessage());
+
+        ApiResponse<Object> response = ApiResponse.builder()
+                .success(false)
+                .message(ex.getMessage())
+                .data(null)
+                .code(HttpStatus.NOT_FOUND.value())
+                .timestamp(Instant.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBadRequestException(BadRequestException ex) {
+        // 400 Bad Request
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("An unexpected error occurred", 500));
+    public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
+        // 500 Internal Server Error
     }
 }
 ```
 
-Dengan ini, semua error akan otomatis dibungkus dalam format `ApiResponse`.
+Dengan ini, semua error akan otomatis dibungkus dalam format `ApiResponse` yang konsisten.
+
+> 📖 Untuk dokumentasi lengkap, lihat [ERROR_HANDLING.md](./ERROR_HANDLING.md)

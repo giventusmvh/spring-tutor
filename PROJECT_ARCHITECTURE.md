@@ -185,6 +185,11 @@ spring-tutor/
 │   │   ├── RoleService.java            # Role business logic
 │   │   └── UserService.java            # User business logic
 │   │
+│   ├── exception/                      # Exception handling
+│   │   ├── BadRequestException.java    # 400 Bad Request
+│   │   ├── ResourceNotFoundException.java # 404 Not Found
+│   │   └── GlobalExceptionHandler.java # Global exception handler
+│   │
 │   └── util/                           # Utility classes
 │       └── ResponseUtil.java           # Response builder helper
 │
@@ -487,14 +492,35 @@ public class RedisConfig {
 
 ### Protected Endpoints (Butuh JWT)
 
-| Method | Endpoint    | Description        |
-| ------ | ----------- | ------------------ |
-| GET    | `/products` | Get all products   |
-| POST   | `/products` | Create new product |
-| GET    | `/users`    | Get all users      |
-| POST   | `/users`    | Create new user    |
-| GET    | `/roles`    | Get all roles      |
-| POST   | `/roles`    | Create new role    |
+#### Product Endpoints
+
+| Method | Endpoint         | Description        |
+| ------ | ---------------- | ------------------ |
+| GET    | `/products`      | Get all products   |
+| POST   | `/products`      | Create new product |
+| GET    | `/products/{id}` | Get product by ID  |
+| PUT    | `/products/{id}` | Update product     |
+| DELETE | `/products/{id}` | Delete product     |
+
+#### User Endpoints
+
+| Method | Endpoint      | Description     |
+| ------ | ------------- | --------------- |
+| GET    | `/users`      | Get all users   |
+| POST   | `/users`      | Create new user |
+| GET    | `/users/{id}` | Get user by ID  |
+| PUT    | `/users/{id}` | Update user     |
+| DELETE | `/users/{id}` | Delete user     |
+
+#### Role Endpoints
+
+| Method | Endpoint      | Description     |
+| ------ | ------------- | --------------- |
+| GET    | `/roles`      | Get all roles   |
+| POST   | `/roles`      | Create new role |
+| GET    | `/roles/{id}` | Get role by ID  |
+| PUT    | `/roles/{id}` | Update role     |
+| DELETE | `/roles/{id}` | Delete role     |
 
 ### Response Format
 
@@ -713,6 +739,7 @@ curl http://localhost:8080/products \
 - [JWT Authentication Tutorial](./JWT_TUTORIAL.md)
 - [Redis Caching Tutorial](./REDIS_TUTORIAL.md)
 - [API Response Standards](./API_RESPONSE.md)
+- [Error Handling](./ERROR_HANDLING.md)
 - [Postman Collection](./API_POSTMAN.md)
 
 ---
