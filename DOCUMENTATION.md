@@ -355,6 +355,91 @@ curl -X POST http://localhost:8080/users \
   }'
 ```
 
+### 6. Get Role by ID
+
+```bash
+curl -X GET http://localhost:8080/roles/1
+```
+
+### 7. Update Role
+
+```bash
+curl -X PUT http://localhost:8080/roles/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "SUPER_ADMIN"}'
+```
+
+### 8. Delete Role
+
+```bash
+curl -X DELETE http://localhost:8080/roles/1
+```
+
+### 9. Get User by ID
+
+```bash
+curl -X GET http://localhost:8080/users/1
+```
+
+### 10. Update User
+
+```bash
+curl -X PUT http://localhost:8080/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin_updated",
+    "email": "admin_new@example.com"
+  }'
+```
+
+### 11. Delete User
+
+```bash
+curl -X DELETE http://localhost:8080/users/1
+```
+
+### 12. Get All Products
+
+```bash
+curl -X GET http://localhost:8080/products
+```
+
+### 13. Create Product
+
+```bash
+curl -X POST http://localhost:8080/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Kredit Multiguna",
+    "tenor": 12,
+    "interestRate": 10.5
+  }'
+```
+
+### 14. Get Product by ID
+
+```bash
+curl -X GET http://localhost:8080/products/1
+```
+
+### 15. Update Product
+
+```bash
+curl -X PUT http://localhost:8080/products/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Kredit Multiguna Premium",
+    "tenor": 18,
+    "interestRate": 9.0
+  }'
+```
+
+### 16. Delete Product
+
+```bash
+curl -X DELETE http://localhost:8080/products/1
+```
+
 ---
 
 ## Catatan Penting

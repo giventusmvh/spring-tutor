@@ -8,12 +8,35 @@ Dokumentasi lengkap untuk testing REST API menggunakan Postman.
 
 ## 📋 Daftar Endpoint
 
-| Method | Endpoint | Deskripsi                         |
-| ------ | -------- | --------------------------------- |
-| GET    | `/roles` | Mengambil semua role              |
-| POST   | `/roles` | Membuat role baru                 |
-| GET    | `/users` | Mengambil semua user beserta role |
-| POST   | `/users` | Membuat user baru                 |
+### Role Endpoints
+
+| Method | Endpoint      | Deskripsi                     |
+| ------ | ------------- | ----------------------------- |
+| GET    | `/roles`      | Mengambil semua role          |
+| POST   | `/roles`      | Membuat role baru             |
+| GET    | `/roles/{id}` | Mengambil role berdasarkan ID |
+| PUT    | `/roles/{id}` | Update role berdasarkan ID    |
+| DELETE | `/roles/{id}` | Hapus role berdasarkan ID     |
+
+### User Endpoints
+
+| Method | Endpoint      | Deskripsi                         |
+| ------ | ------------- | --------------------------------- |
+| GET    | `/users`      | Mengambil semua user beserta role |
+| POST   | `/users`      | Membuat user baru                 |
+| GET    | `/users/{id}` | Mengambil user berdasarkan ID     |
+| PUT    | `/users/{id}` | Update user berdasarkan ID        |
+| DELETE | `/users/{id}` | Hapus user berdasarkan ID         |
+
+### Product Endpoints
+
+| Method | Endpoint         | Deskripsi                        |
+| ------ | ---------------- | -------------------------------- |
+| GET    | `/products`      | Mengambil semua product          |
+| POST   | `/products`      | Membuat product baru             |
+| GET    | `/products/{id}` | Mengambil product berdasarkan ID |
+| PUT    | `/products/{id}` | Update product berdasarkan ID    |
+| DELETE | `/products/{id}` | Hapus product berdasarkan ID     |
 
 ---
 
@@ -91,9 +114,110 @@ POST http://localhost:8081/roles
 
 ---
 
+### 3. Get Role by ID
+
+Mengambil role berdasarkan ID.
+
+**Request:**
+
+```
+GET http://localhost:8081/roles/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Role retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "ADMIN"
+  }
+}
+```
+
+**Possible Errors:**
+| Status | Deskripsi |
+|--------|-----------|
+| 500 | Role tidak ditemukan |
+
+---
+
+### 4. Update Role
+
+Update role berdasarkan ID.
+
+**Request:**
+
+```
+PUT http://localhost:8081/roles/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "name": "SUPER_ADMIN"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Role updated successfully",
+  "data": {
+    "id": 1,
+    "name": "SUPER_ADMIN"
+  }
+}
+```
+
+---
+
+### 5. Delete Role
+
+Hapus role berdasarkan ID.
+
+**Request:**
+
+```
+DELETE http://localhost:8081/roles/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Role deleted successfully",
+  "data": null
+}
+```
+
+---
+
 ## 👤 User Endpoints
 
-### 3. Get All Users
+### 6. Get All Users
 
 Mengambil daftar semua user beserta role yang dimiliki.
 
@@ -151,7 +275,7 @@ GET http://localhost:8081/users
 
 ---
 
-### 4. Create New User (Tanpa Role)
+### 7. Create New User (Tanpa Role)
 
 Membuat user baru tanpa assign role.
 
@@ -193,7 +317,7 @@ POST http://localhost:8081/users
 
 ---
 
-### 5. Create New User (Dengan Role)
+### 8. Create New User (Dengan Role)
 
 Membuat user baru dan langsung assign role yang sudah ada.
 
@@ -249,6 +373,287 @@ POST http://localhost:8081/users
 | Status | Deskripsi |
 |--------|-----------|
 | 500 | Username sudah ada (duplicate) |
+
+---
+
+### 9. Get User by ID
+
+Mengambil user berdasarkan ID.
+
+**Request:**
+
+```
+GET http://localhost:8081/users/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "User retrieved successfully",
+  "data": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "roles": [{ "id": 1, "name": "ADMIN" }]
+  }
+}
+```
+
+---
+
+### 10. Update User
+
+Update user berdasarkan ID.
+
+**Request:**
+
+```
+PUT http://localhost:8081/users/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "username": "admin_updated",
+  "email": "admin_new@example.com"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "User updated successfully",
+  "data": {
+    "id": 1,
+    "username": "admin_updated",
+    "email": "admin_new@example.com"
+  }
+}
+```
+
+---
+
+### 11. Delete User
+
+Hapus user berdasarkan ID.
+
+**Request:**
+
+```
+DELETE http://localhost:8081/users/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "User deleted successfully",
+  "data": null
+}
+```
+
+---
+
+## 📦 Product Endpoints
+
+### 12. Get All Products
+
+Mengambil semua product.
+
+**Request:**
+
+```
+GET http://localhost:8081/products
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Products retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Kredit Multiguna",
+      "tenor": 12,
+      "interestRate": 10.5
+    }
+  ]
+}
+```
+
+---
+
+### 13. Create Product
+
+Membuat product baru.
+
+**Request:**
+
+```
+POST http://localhost:8081/products
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "name": "Kredit Kendaraan",
+  "tenor": 24,
+  "interestRate": 8.5
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+  "success": true,
+  "message": "Product created successfully",
+  "data": {
+    "id": 2,
+    "name": "Kredit Kendaraan",
+    "tenor": 24,
+    "interestRate": 8.5
+  }
+}
+```
+
+---
+
+### 14. Get Product by ID
+
+Mengambil product berdasarkan ID.
+
+**Request:**
+
+```
+GET http://localhost:8081/products/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Product retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Kredit Multiguna",
+    "tenor": 12,
+    "interestRate": 10.5
+  }
+}
+```
+
+---
+
+### 15. Update Product
+
+Update product berdasarkan ID.
+
+**Request:**
+
+```
+PUT http://localhost:8081/products/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Content-Type | application/json |
+| Accept | application/json |
+
+**Body (raw JSON):**
+
+```json
+{
+  "name": "Kredit Multiguna Premium",
+  "tenor": 18,
+  "interestRate": 9.0
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Product updated successfully",
+  "data": {
+    "id": 1,
+    "name": "Kredit Multiguna Premium",
+    "tenor": 18,
+    "interestRate": 9.0
+  }
+}
+```
+
+---
+
+### 16. Delete Product
+
+Hapus product berdasarkan ID.
+
+**Request:**
+
+```
+DELETE http://localhost:8081/products/1
+```
+
+**Headers:**
+| Key | Value |
+|-----|-------|
+| Accept | application/json |
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Product deleted successfully",
+  "data": null
+}
+```
 
 ---
 
