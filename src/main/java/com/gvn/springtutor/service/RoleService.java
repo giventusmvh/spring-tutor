@@ -1,6 +1,7 @@
 package com.gvn.springtutor.service;
 
 import com.gvn.springtutor.entity.Role;
+import com.gvn.springtutor.exception.ResourceNotFoundException;
 import com.gvn.springtutor.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class RoleService {
     public Role getRoleById(Long id) {
         log.info("Fetching role with ID {} from DATABASE", id);
         return roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
     }
 
     /**
@@ -65,7 +66,7 @@ public class RoleService {
     public Role updateRole(Long id, Role roleDetails) {
         log.info("Updating role with ID: {}", id);
         Role existingRole = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
 
         existingRole.setName(roleDetails.getName());
 
@@ -79,7 +80,7 @@ public class RoleService {
     public void deleteRole(Long id) {
         log.info("Deleting role with ID: {}", id);
         Role existingRole = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
         roleRepository.delete(existingRole);
     }
 }

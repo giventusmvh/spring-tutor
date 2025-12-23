@@ -1,6 +1,7 @@
 package com.gvn.springtutor.service;
 
 import com.gvn.springtutor.entity.User;
+import com.gvn.springtutor.exception.ResourceNotFoundException;
 import com.gvn.springtutor.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class UserService {
     public User getUserById(Long id) {
         log.info("Fetching user with ID {} from DATABASE", id);
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
     /**
@@ -65,7 +66,7 @@ public class UserService {
     public User updateUser(Long id, User userDetails) {
         log.info("Updating user with ID: {}", id);
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
         existingUser.setUsername(userDetails.getUsername());
         existingUser.setEmail(userDetails.getEmail());
@@ -86,7 +87,7 @@ public class UserService {
     public void deleteUser(Long id) {
         log.info("Deleting user with ID: {}", id);
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         userRepository.delete(existingUser);
     }
 }

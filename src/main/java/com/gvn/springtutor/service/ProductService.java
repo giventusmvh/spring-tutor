@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.gvn.springtutor.entity.Product;
+import com.gvn.springtutor.exception.ResourceNotFoundException;
 import com.gvn.springtutor.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class ProductService {
     public Product getProductById(Long id) {
         log.info("Fetching product with ID {} from DATABASE", id);
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
     }
 
     /**
@@ -71,7 +72,7 @@ public class ProductService {
     public Product updateProduct(Long id, Product productDetails) {
         log.info("Updating product with ID: {}", id);
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
 
         existingProduct.setName(productDetails.getName());
         existingProduct.setTenor(productDetails.getTenor());
@@ -89,7 +90,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
         log.info("Deleting product with ID: {}", id);
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
         productRepository.delete(existingProduct);
     }
 }
