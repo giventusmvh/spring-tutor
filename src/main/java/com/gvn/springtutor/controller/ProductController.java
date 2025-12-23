@@ -41,4 +41,13 @@ public class ProductController {
         Product savedProduct = productService.createProduct(product);
         return ResponseUtil.created(savedProduct, "Product created successfully");
     }
+
+    /**
+     * GET /products/{id} - Mengambil product berdasarkan ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+        return ResponseUtil.ok(product, "Product retrieved successfully");
+    }
 }

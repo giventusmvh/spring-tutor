@@ -47,4 +47,14 @@ public class UserService {
         log.info("Fetching user '{}' from DATABASE", username);
         return userRepository.findByUsername(username);
     }
+
+    /**
+     * Get user by ID dengan caching.
+     */
+    @Cacheable(value = "users", key = "'user_' + #id")
+    public User getUserById(Long id) {
+        log.info("Fetching user with ID {} from DATABASE", id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
 }

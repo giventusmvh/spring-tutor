@@ -47,4 +47,14 @@ public class RoleService {
         log.info("Fetching role '{}' from DATABASE", name);
         return roleRepository.findByName(name);
     }
+
+    /**
+     * Get role by ID dengan caching.
+     */
+    @Cacheable(value = "roles", key = "'role_' + #id")
+    public Role getRoleById(Long id) {
+        log.info("Fetching role with ID {} from DATABASE", id);
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+    }
 }

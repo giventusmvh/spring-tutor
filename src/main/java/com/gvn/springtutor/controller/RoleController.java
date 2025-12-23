@@ -39,4 +39,13 @@ public class RoleController {
         Role savedRole = roleService.createRole(role);
         return ResponseUtil.created(savedRole, "Role created successfully");
     }
+
+    /**
+     * GET /roles/{id} - Mengambil role berdasarkan ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Role>> getRoleById(@PathVariable Long id) {
+        Role role = roleService.getRoleById(id);
+        return ResponseUtil.ok(role, "Role retrieved successfully");
+    }
 }

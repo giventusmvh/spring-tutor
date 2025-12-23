@@ -39,4 +39,13 @@ public class UserController {
         User savedUser = userService.createUser(user);
         return ResponseUtil.created(savedUser, "User created successfully");
     }
+
+    /**
+     * GET /users/{id} - Mengambil user berdasarkan ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseUtil.ok(user, "User retrieved successfully");
+    }
 }

@@ -49,4 +49,16 @@ public class ProductService {
         log.info("Fetching all products from DATABASE");
         return productRepository.findAll();
     }
+
+    /**
+     * Get product by ID dengan caching.
+     * 
+     * @Cacheable - Cache hasil dengan key berdasarkan ID
+     */
+    @Cacheable(value = "products", key = "#id")
+    public Product getProductById(Long id) {
+        log.info("Fetching product with ID {} from DATABASE", id);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
 }
