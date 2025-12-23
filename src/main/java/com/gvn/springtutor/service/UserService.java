@@ -57,4 +57,36 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
+
+    /**
+     * Update user dan hapus cache.
+     */
+    @CacheEvict(value = "users", allEntries = true)
+    public User updateUser(Long id, User userDetails) {
+        log.info("Updating user with ID: {}", id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        existingUser.setUsername(userDetails.getUsername());
+        existingUser.setEmail(userDetails.getEmail());
+        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+            existingUser.setPassword(userDetails.getPassword());
+        }
+        if (userDetails.getRoles() != null) {
+            existingUser.setRoles(userDetails.getRoles());
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    /**
+     * Delete user dan hapus cache.
+     */
+    @CacheEvict(value = "users", allEntries = true)
+    public void deleteUser(Long id) {
+        log.info("Deleting user with ID: {}", id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.delete(existingUser);
+    }
 }

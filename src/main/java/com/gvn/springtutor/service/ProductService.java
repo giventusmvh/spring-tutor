@@ -61,4 +61,35 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
+
+    /**
+     * Update product dan hapus cache.
+     * 
+     * @CacheEvict - Menghapus semua cache products karena data berubah
+     */
+    @CacheEvict(value = "products", allEntries = true)
+    public Product updateProduct(Long id, Product productDetails) {
+        log.info("Updating product with ID: {}", id);
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+        existingProduct.setName(productDetails.getName());
+        existingProduct.setTenor(productDetails.getTenor());
+        existingProduct.setInterestRate(productDetails.getInterestRate());
+
+        return productRepository.save(existingProduct);
+    }
+
+    /**
+     * Delete product dan hapus cache.
+     * 
+     * @CacheEvict - Menghapus semua cache products karena data berubah
+     */
+    @CacheEvict(value = "products", allEntries = true)
+    public void deleteProduct(Long id) {
+        log.info("Deleting product with ID: {}", id);
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+        productRepository.delete(existingProduct);
+    }
 }

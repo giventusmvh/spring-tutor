@@ -57,4 +57,29 @@ public class RoleService {
         return roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
     }
+
+    /**
+     * Update role dan hapus cache.
+     */
+    @CacheEvict(value = "roles", allEntries = true)
+    public Role updateRole(Long id, Role roleDetails) {
+        log.info("Updating role with ID: {}", id);
+        Role existingRole = roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+
+        existingRole.setName(roleDetails.getName());
+
+        return roleRepository.save(existingRole);
+    }
+
+    /**
+     * Delete role dan hapus cache.
+     */
+    @CacheEvict(value = "roles", allEntries = true)
+    public void deleteRole(Long id) {
+        log.info("Deleting role with ID: {}", id);
+        Role existingRole = roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+        roleRepository.delete(existingRole);
+    }
 }

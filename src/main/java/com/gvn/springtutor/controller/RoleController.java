@@ -48,4 +48,22 @@ public class RoleController {
         Role role = roleService.getRoleById(id);
         return ResponseUtil.ok(role, "Role retrieved successfully");
     }
+
+    /**
+     * PUT /roles/{id} - Update role berdasarkan ID.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Role>> updateRole(@PathVariable Long id, @RequestBody Role role) {
+        Role updatedRole = roleService.updateRole(id, role);
+        return ResponseUtil.ok(updatedRole, "Role updated successfully");
+    }
+
+    /**
+     * DELETE /roles/{id} - Hapus role berdasarkan ID.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable Long id) {
+        roleService.deleteRole(id);
+        return ResponseUtil.ok(null, "Role deleted successfully");
+    }
 }

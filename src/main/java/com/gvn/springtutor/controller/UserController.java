@@ -48,4 +48,22 @@ public class UserController {
         User user = userService.getUserById(id);
         return ResponseUtil.ok(user, "User retrieved successfully");
     }
+
+    /**
+     * PUT /users/{id} - Update user berdasarkan ID.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        return ResponseUtil.ok(updatedUser, "User updated successfully");
+    }
+
+    /**
+     * DELETE /users/{id} - Hapus user berdasarkan ID.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseUtil.ok(null, "User deleted successfully");
+    }
 }

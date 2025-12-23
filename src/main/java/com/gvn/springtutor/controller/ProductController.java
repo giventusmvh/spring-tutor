@@ -50,4 +50,22 @@ public class ProductController {
         Product product = productService.getProductById(id);
         return ResponseUtil.ok(product, "Product retrieved successfully");
     }
+
+    /**
+     * PUT /products/{id} - Update product berdasarkan ID.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Product>> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        Product updatedProduct = productService.updateProduct(id, product);
+        return ResponseUtil.ok(updatedProduct, "Product updated successfully");
+    }
+
+    /**
+     * DELETE /products/{id} - Hapus product berdasarkan ID.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseUtil.ok(null, "Product deleted successfully");
+    }
 }
