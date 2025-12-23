@@ -514,7 +514,7 @@ GET http://localhost:8081/products
 
 ### 13. Create Product
 
-Membuat product baru.
+Membuat product baru menggunakan `CreateProductRequest` DTO dengan validasi.
 
 **Request:**
 
@@ -538,6 +538,14 @@ POST http://localhost:8081/products
 }
 ```
 
+**Request DTO: `CreateProductRequest`**
+
+| Field        | Tipe    | Required | Validation                      |
+| ------------ | ------- | -------- | ------------------------------- |
+| name         | String  | ✅ Ya    | @NotBlank - tidak boleh kosong  |
+| tenor        | Integer | ✅ Ya    | @NotNull, @Positive - harus > 0 |
+| interestRate | Double  | ✅ Ya    | @NotNull, @Positive - harus > 0 |
+
 **Response:** `201 Created`
 
 ```json
@@ -549,6 +557,19 @@ POST http://localhost:8081/products
     "name": "Kredit Kendaraan",
     "tenor": 24,
     "interestRate": 8.5
+  }
+}
+```
+
+**Validation Error Response:** `400 Bad Request`
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": {
+    "name": "Name is required",
+    "tenor": "Tenor must be positive"
   }
 }
 ```
@@ -589,7 +610,7 @@ GET http://localhost:8081/products/1
 
 ### 15. Update Product
 
-Update product berdasarkan ID.
+Update product berdasarkan ID menggunakan `UpdateProductRequest` DTO dengan partial update.
 
 **Request:**
 
@@ -612,6 +633,16 @@ PUT http://localhost:8081/products/1
   "interestRate": 9.0
 }
 ```
+
+**Request DTO: `UpdateProductRequest`**
+
+| Field        | Tipe    | Required | Validation                       |
+| ------------ | ------- | -------- | -------------------------------- |
+| name         | String  | Tidak    | Optional - partial update        |
+| tenor        | Integer | Tidak    | @Positive - jika diisi harus > 0 |
+| interestRate | Double  | Tidak    | @Positive - jika diisi harus > 0 |
+
+> **Note:** Ini adalah partial update - hanya field yang diisi yang akan diupdate. Field yang tidak diisi akan tetap menggunakan nilai sebelumnya.
 
 **Response:** `200 OK`
 
@@ -791,6 +822,26 @@ DELETE http://localhost:8081/products/1
 | Field | Tipe   | Required | Deskripsi                            |
 | ----- | ------ | -------- | ------------------------------------ |
 | name  | String | ✅ Ya    | Nama role unik, maksimal 50 karakter |
+
+### Product Fields
+
+#### CreateProductRequest (POST /products)
+
+| Field        | Tipe    | Required | Validation                      |
+| ------------ | ------- | -------- | ------------------------------- |
+| name         | String  | ✅ Ya    | @NotBlank - tidak boleh kosong  |
+| tenor        | Integer | ✅ Ya    | @NotNull, @Positive - harus > 0 |
+| interestRate | Double  | ✅ Ya    | @NotNull, @Positive - harus > 0 |
+
+#### UpdateProductRequest (PUT /products/{id})
+
+| Field        | Tipe    | Required | Validation                       |
+| ------------ | ------- | -------- | -------------------------------- |
+| name         | String  | Tidak    | Optional - partial update        |
+| tenor        | Integer | Tidak    | @Positive - jika diisi harus > 0 |
+| interestRate | Double  | Tidak    | @Positive - jika diisi harus > 0 |
+
+> **Partial Update**: Hanya field yang diisi yang akan diupdate. Field yang tidak diisi/null akan tetap menggunakan nilai sebelumnya.
 
 ---
 

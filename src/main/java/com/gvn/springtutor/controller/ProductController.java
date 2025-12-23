@@ -6,6 +6,7 @@ import com.gvn.springtutor.dto.UpdateProductRequest;
 import com.gvn.springtutor.entity.Product;
 import com.gvn.springtutor.service.ProductService;
 import com.gvn.springtutor.util.ResponseUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -36,9 +37,10 @@ public class ProductController {
 
     /**
      * POST /products - Membuat product baru.
+     * Menggunakan @Valid untuk aktivasi Bean Validation pada request body.
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Product>> createProduct(@RequestBody CreateProductRequest request) {
+    public ResponseEntity<ApiResponse<Product>> createProduct(@Valid @RequestBody CreateProductRequest request) {
         Product savedProduct = productService.createProduct(request);
         return ResponseUtil.created(savedProduct, "Product created successfully");
     }
@@ -54,10 +56,11 @@ public class ProductController {
 
     /**
      * PUT /products/{id} - Update product berdasarkan ID.
+     * Menggunakan @Valid untuk aktivasi Bean Validation pada request body.
      */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Product>> updateProduct(@PathVariable Long id,
-            @RequestBody UpdateProductRequest request) {
+            @Valid @RequestBody UpdateProductRequest request) {
         Product updatedProduct = productService.updateProduct(id, request);
         return ResponseUtil.ok(updatedProduct, "Product updated successfully");
     }

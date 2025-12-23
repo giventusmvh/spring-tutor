@@ -25,20 +25,34 @@ Project ini adalah REST API menggunakan:
 
 ```
 com.gvn.springtutor
+├── base/             # Base response classes
+│   └── ApiResponse.java
 ├── config/           # Konfigurasi aplikasi
 │   └── DataInitializer.java
 ├── controller/       # REST Controller (presentation layer)
+│   ├── ProductController.java
 │   ├── RoleController.java
 │   └── UserController.java
+├── dto/              # Data Transfer Objects untuk request/response
+│   ├── CreateProductRequest.java
+│   ├── UpdateProductRequest.java
+│   └── ...
 ├── entity/           # JPA Entity (domain model)
+│   ├── Product.java
 │   ├── Role.java
 │   └── User.java
+├── exception/        # Custom exceptions
+│   └── ...
 ├── repository/       # Spring Data Repository (data access layer)
+│   ├── ProductRepository.java
 │   ├── RoleRepository.java
 │   └── UserRepository.java
 ├── service/          # Business logic layer
+│   ├── ProductService.java
 │   ├── RoleService.java
 │   └── UserService.java
+├── util/             # Utility classes
+│   └── ResponseUtil.java
 └── SpringTutorApplication.java
 ```
 
